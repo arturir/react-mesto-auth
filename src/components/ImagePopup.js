@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 
-export default function PopupWithForm ({name, card, onClose, isOpen}) {
+export default function ImagePopup ({name, card, onClose, isOpen}) {
 
     useEffect(() => {
         setTimeout(()=> {document.querySelector(`.popup_${name}`).classList.add(isOpen)}, 0)
