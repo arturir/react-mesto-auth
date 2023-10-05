@@ -44,7 +44,8 @@ export default function Main ({handleEditAvatarClick, handleEditProfileClick, ha
             </section>
             <section className="cards">
                 {cards.map((card)=> (
-                    <Card card={card} onCardClick={onCardClick} key={card._id}/>
+                    <Card card={card} onCardClick={onCardClick} key={card._id} />
+                    
                 ))}
             </section>
         </main>
