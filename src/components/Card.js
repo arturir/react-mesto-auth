@@ -4,10 +4,9 @@ export default function Card ({card, onCardClick}) {
     const handleClick = () => {
         onCardClick(card);
     } 
-    console.log(card);
     return (
         <div className={`card`}>
-            <img src={link} className="card__image" alt="#"  onClick={handleClick} />
+            <img src={link} className="card__image" alt={name}  onClick={handleClick} />
             <div className="card__wrapper">
                 <h2 className="card__title">{name}</h2>
                 <div className="card__wrapper-like">

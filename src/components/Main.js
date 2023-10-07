@@ -10,18 +10,29 @@ export default function Main ({handleEditAvatarClick, handleEditProfileClick, ha
           [userAvatar, setUserAvatar] = useState(avatar),
           [cards, setCards] = useState([]);
 
+    function handleResponseError (error, textError) {
+        console.log(error, " ", textError);
+    }
+    
     useEffect(()=> {
         api.getUserInfo()
         .then(({name, about, avatar}) => {
             setUserName(name);
             setuserDescription(about); 
-            setUserAvatar(avatar);});
-        }, [userName, userDescription, userAvatar]);
+            setUserAvatar(avatar);
+        })
+        .catch((error)=> {
+            handleResponseError(error, "Ошибка получения информации о пользователе");
+        });
+        }, []);
     useEffect(()=> {
         api.getCards()
         .then(data => {
             setCards(data)
         })
+        .catch((error)=> {
+            handleResponseError(error, "Ошибка получения карточек мест")
+        });
     }, []);
 
     return (
@@ -45,7 +56,6 @@ export default function Main ({handleEditAvatarClick, handleEditProfileClick, ha
             <section className="cards">
                 {cards.map((card)=> (
                     <Card card={card} onCardClick={onCardClick} key={card._id} />
-                    
                 ))}
             </section>
         </main>
