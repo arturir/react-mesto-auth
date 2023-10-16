@@ -3,7 +3,9 @@ import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
 import PopupWithForm from './components/PopupWithForm';
-import ImagePopup from './components/ImagePopup'
+import ImagePopup from './components/ImagePopup';
+import api from './utils/Api';
+import {CurrentUserContext} from './contexts/CurrentUserContext';
 
 function App() {
 
@@ -12,6 +14,18 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [isSomePopupOpen, setIsSomePopupOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+
+  function handleResponseError (error, textError) {
+    console.log(error, " ", textError);
+  }
+  useEffect(() => {
+    api.getUserInfo()
+    .then((data)=> {setCurrentUser(data)})
+    .catch((error)=> {
+      handleResponseError(error, "Ошибка получения информации о пользователе");
+    });
+  }, [])
 
   useEffect(() => {
     const handleEscClose = (event) => {
@@ -55,6 +69,7 @@ function App() {
   }
 
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
         <Header />
         <Main handleEditProfileClick={handleEditProfileClick}
@@ -91,6 +106,7 @@ function App() {
                     name={'image'} 
                     onClose={closeAllPopups}/>
     </div>
+    </CurrentUserContext.Provider>
   );
 
 }
