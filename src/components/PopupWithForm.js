@@ -1,4 +1,4 @@
-export default function PopupWithForm ({title, name, isOpen, onClose, children}) {
+export default function PopupWithForm ({title, name, isOpen, onClose, onSubmit, children}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -16,10 +16,10 @@ export default function PopupWithForm ({title, name, isOpen, onClose, children})
     return (
         <div className={`popup popup_${name}  ${isOpen ? "popup_active" : ""}`} onClick={handleOverlayClose}>
             <div className="popup__container popup__container_form ">
-                <form className="form form_profile" name={name} noValidate>
+                <form className="form form_profile" name={name} noValidate onSubmit={onSubmit}>
                     <h2 className="form__title">{title}</h2>
                     {children}
-                    <button type="submit" className="form__submit" onClick={handleSubmit}>Сохранить</button>    
+                    <button type="submit" className="form__submit">Сохранить</button>    
                 </form>
                 <button type="button" className="close-icon" onClick={close}></button> 
             </div>

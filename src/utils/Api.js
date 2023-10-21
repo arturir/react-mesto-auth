@@ -7,7 +7,7 @@ class Api {
     
     _getResponseData(response) {
         if (!response.ok) {
-            return Promise.reject(`Ошибка: ${response.status}`); 
+            return Promise.reject(`Ошибочка вышла: ${response.status}`); 
         }
         return response.json();
     } 
@@ -27,6 +27,7 @@ class Api {
     }
 
     editProfile(name, about) {
+        console.log('api', name, about)
         return fetch(`${this._url}${this._id}/users/me`, {
             method: 'PATCH',
             headers: {
@@ -99,6 +100,11 @@ class Api {
         })
         .then(response => this._getResponseData(response))
     }
+    changeLikeCardStatus(cardId, isLiked) {
+        if (isLiked) {return this.deleteLikeCard(cardId)} else {return this.addLikeCard(cardId)}
+    }
+
+
 
 }
 const api = new Api('https://nomoreparties.co/v1/', 'f47209cc-6612-4651-86f9-cddebc6c2b9a', 'cohort-75');
