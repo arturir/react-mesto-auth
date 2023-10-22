@@ -14,7 +14,7 @@ export default function PopupWithForm ({title, name, isOpen, onClose, onSubmit, 
     }
 
     return (
-        <div className={`popup popup_${name}  ${isOpen ? "popup_active" : ""}`} onClick={handleOverlayClose}>
+        <div className={`popup popup_${name}  ${isOpen ? "popup_active" : ""}`} onMouseDown={handleOverlayClose}>
             <div className="popup__container popup__container_form ">
                 <form className="form form_profile" name={name} noValidate onSubmit={onSubmit}>
                     <h2 className="form__title">{title}</h2>

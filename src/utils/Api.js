@@ -27,7 +27,6 @@ class Api {
     }
 
     editProfile(name, about) {
-        console.log('api', name, about)
         return fetch(`${this._url}${this._id}/users/me`, {
             method: 'PATCH',
             headers: {

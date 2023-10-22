@@ -81,16 +81,16 @@ export default function App() {
        .then(() => {setCards((cards) => cards.filter(c => c !== card ))});
   }
   function handleUpdateUser ({name, about}) {
-    api.editProfile(name, about)
-       .then((data) => {setCurrentUser(data)});
+    return (api.editProfile(name, about)
+       .then((data) => {setCurrentUser(data)}))
   }
   function handleUpdateAvatar (url) {
-    api.editAvatar(url)
-       .then((url) => {setCurrentUser(url)});
+    return (api.editAvatar(url)
+       .then((url) => {setCurrentUser(url)}))
   }
   function handleAddNewCard ({name, link}) {
-    api.addNewCard(name, link)
-       .then((data) => {setCards([data, ...cards])})
+    return (api.addNewCard(name, link)
+       .then((data) => {setCards([data, ...cards])}))
   }
 
   return (

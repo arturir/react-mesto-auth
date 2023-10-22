@@ -10,7 +10,7 @@ export default function EditProfilePopup ({isOpen, onClose, onUpdateUser}) {
   useEffect(() => {
     setName(context.currentUser.name);
     setDescription(context.currentUser.about);
-  }, [context.currentUser]); 
+  }, [context.currentUser, isOpen]); 
 
   function handleChangeName(e) {
     setName(e.target.value);
@@ -23,8 +23,8 @@ export default function EditProfilePopup ({isOpen, onClose, onUpdateUser}) {
     onUpdateUser({
       name,
       about: description,
-    });
-    onClose();
+    })
+    .then(()=> {onClose()})
   } 
 
   return (
@@ -33,9 +33,9 @@ export default function EditProfilePopup ({isOpen, onClose, onUpdateUser}) {
                    name={'profile-editor'} 
                    isOpen={isOpen} 
                    onClose={onClose}>
-        <input id="profile-form-name" type="text" className="form__text" name="name" placeholder="Имя" minLength="2" maxLength="40" required onChange={handleChangeName} />
+        <input id="profile-form-name" type="text" className="form__text" name="name" placeholder="Имя" minLength="2" maxLength="40" required onChange={handleChangeName} value={name || ''}/>
         <span className="form__input-error profile-form-name-error"></span>
-        <input id="profile-form-metier" type="text" className="form__text" name="description" placeholder="Деятельность" minLength="2" maxLength="200" required onChange={handleChangeDescription} />
+        <input id="profile-form-metier" type="text" className="form__text" name="description" placeholder="Деятельность" minLength="2" maxLength="200" required onChange={handleChangeDescription} value={description || ''}/>
         <span className="form__input-error profile-form-metier-error"></span>
     </PopupWithForm>
   )

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
 export default function AddPlacePopup ({isOpen, onClose, onAddPlace}) {
 
   const [name, setName] = useState(''),
         [link, setLink] = useState('');
-  
+
   function handleChangeName(e) {
     setName(e.target.value);
   }
@@ -16,8 +16,12 @@ export default function AddPlacePopup ({isOpen, onClose, onAddPlace}) {
     onAddPlace({
       name,
       link
+    })
+    .then(()=> {
+      onClose(); 
+      setName('');
+      setLink('');
     });
-    onClose();
   } 
 
   return (
@@ -26,9 +30,9 @@ export default function AddPlacePopup ({isOpen, onClose, onAddPlace}) {
                    name={'new-card'} 
                    isOpen={isOpen} 
                    onClose={onClose}>
-      <input id="new-place-form-place" type="text" className="form__text" name="name" placeholder="Название" minLength="2" maxLength="30" required onChange={handleChangeName}/>
+      <input id="new-place-form-place" type="text" className="form__text" name="name" placeholder="Название" minLength="2" maxLength="30" required onChange={handleChangeName} value={name}/>
       <span className="form__input-error new-place-form-place-error"></span>
-      <input id="new-place-form-link" type="url" className="form__text" name="link" placeholder="Ссылка на картинку" required onChange={handleChangeLink}/>
+      <input id="new-place-form-link" type="url" className="form__text" name="link" placeholder="Ссылка на картинку" required onChange={handleChangeLink} value={link}/>
       <span className="form__input-error new-place-form-link-error"></span>
     </PopupWithForm>
   )
