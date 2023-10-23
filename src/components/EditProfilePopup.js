@@ -1,6 +1,6 @@
 import {useEffect, useState, useContext} from 'react';
 import PopupWithForm from './PopupWithForm';
-import {CurrentUserContext} from './../contexts/CurrentUserContext';
+import { CurrentUserContext } from './../contexts/CurrentUserContext';
 export default function EditProfilePopup ({isOpen, onClose, onUpdateUser}) {
 
   const [name, setName] = useState(''),
@@ -25,6 +25,7 @@ export default function EditProfilePopup ({isOpen, onClose, onUpdateUser}) {
       about: description,
     })
     .then(()=> {onClose()})
+    .catch((error) => {context.handleResponseError(error)})
   } 
 
   return (

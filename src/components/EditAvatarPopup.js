@@ -1,8 +1,10 @@
-import {useRef} from 'react';
+import {useRef, useContext} from 'react';
 import PopupWithForm from "./PopupWithForm";
+import { CurrentUserContext } from './../contexts/CurrentUserContext';
 export default function EditAvatarPopup ({isOpen, onClose, onUpdateAvatar}) {
 
-  const avatar = useRef();
+  const avatar = useRef(),
+        { handleResponseError } = useContext(CurrentUserContext);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -10,6 +12,7 @@ export default function EditAvatarPopup ({isOpen, onClose, onUpdateAvatar}) {
       avatar: avatar.current.value
     })
     .then(()=> {onClose()})
+    .catch((error) => {handleResponseError(error)})
   } 
 
   return (

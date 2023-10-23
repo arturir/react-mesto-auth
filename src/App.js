@@ -37,16 +37,16 @@ export default function App() {
   useEffect(() => {
     api.getUserInfo()
     .then((data) => {setCurrentUser(data)})
-    .catch((error) => {handleResponseError(error, "Ошибка получения информации о пользователе")});
+    .catch((error) => {handleResponseError(error)});
   }, []);
   useEffect(()=> {
     api.getCards()
     .then(data => {setCards(data)})
-    .catch((error) => {handleResponseError(error, "Ошибка получения карточек мест")});
+    .catch((error) => {handleResponseError(error)});
   }, []);
 
-  function handleResponseError (error, textError) {
-    console.log(error, " ", textError);
+  function handleResponseError (error) {
+    console.error("Ошибка данных, подробнее > ", error);
   }
   function handleEditAvatarClick () {
     setIsEditAvatarPopupOpen(true);
@@ -74,11 +74,13 @@ export default function App() {
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     api.changeLikeCardStatus(card._id, isLiked)
-       .then((newCard) => {setCards((cards) => cards.map((c) => c._id === card._id ? newCard : c))});
+       .then((newCard) => {setCards((cards) => cards.map((c) => c._id === card._id ? newCard : c))})
+       .catch((error) => {handleResponseError(error)});
   } 
   function handleCardDelete (card) {
     api.deleteCard(card._id)
-       .then(() => {setCards((cards) => cards.filter(c => c !== card ))});
+       .then(() => {setCards((cards) => cards.filter(c => c !== card ))})
+       .catch((error) => {handleResponseError(error)});
   }
   function handleUpdateUser ({name, about}) {
     return (api.editProfile(name, about)
@@ -94,7 +96,7 @@ export default function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={{currentUser, handleCardLike, handleCardDelete, cards}}>
+    <CurrentUserContext.Provider value={{currentUser, handleCardLike, handleCardDelete, cards, handleResponseError}}>
       <div className="page">
           <Header />
           <Main handleEditProfileClick={handleEditProfileClick}
