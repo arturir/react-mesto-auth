@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import { Routes, Route, Navigate, useNavigate} from 'react-router-dom';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
@@ -7,17 +8,28 @@ import EditAvatarPopup from './components/EditAvatarPopup';
 import AddPlacePopup from './components/AddPlacePopup';
 import ImagePopup from './components/ImagePopup';
 import api from './utils/Api';
-import {CurrentUserContext} from './contexts/CurrentUserContext';
+import { CurrentUserContext } from './contexts/CurrentUserContext';
+import ProtectedRouteElement from './components/ProtectedRoute';
+import { checkToken } from './Auth';
+import  Login from './components/Login';
+import  Register from './components/Register';
+import InfoTooltip from './components/InfoTooltip';
 
 export default function App() {
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false),
         [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false),
         [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false),
+        [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false),
         [selectedCard, setSelectedCard] = useState({}),
         [isSomePopupOpen, setIsSomePopupOpen] = useState(false),
         [currentUser, setCurrentUser] = useState({}),
-        [cards, setCards] = useState([]);
+        [cards, setCards] = useState([]),
+        [loggedIn, setLoggedIn] = useState(false),
+        [login, setLogin] = useState(''),
+        [textInfoTooltip, setTextInfoTooltip] = useState(''),
+        [typeInfoTooltip, setTypeInfoTooltip] = useState(''),
+        navigate = useNavigate(); 
 
   useEffect(() => {
     const handleEscClose = (event) => {
@@ -44,6 +56,9 @@ export default function App() {
     .then(data => {setCards(data)})
     .catch((error) => {handleResponseError(error)});
   }, []);
+  useEffect(() => {
+    tokenCheck();
+  }, [])     
 
   function handleResponseError (error) {
     console.error("Ошибка данных, подробнее > ", error);
@@ -64,10 +79,15 @@ export default function App() {
     setSelectedCard(card);
     setIsSomePopupOpen(true);
   }
+  function handleOpenTooltip () {
+    setIsInfoTooltipPopupOpen(true);
+    setIsSomePopupOpen(true);
+  }
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsInfoTooltipPopupOpen(false);
     setSelectedCard({});
     setIsSomePopupOpen(false);
   }
@@ -83,30 +103,76 @@ export default function App() {
        .catch((error) => {handleResponseError(error)});
   }
   function handleUpdateUser ({name, about}) {
-    return (api.editProfile(name, about)
-       .then((data) => {setCurrentUser(data)}))
+    return (
+      api.editProfile(name, about)
+         .then(data => setCurrentUser(data))
+    )
   }
   function handleUpdateAvatar (url) {
-    return (api.editAvatar(url)
-       .then((url) => {setCurrentUser(url)}))
+    return (
+      api.editAvatar(url)
+         .then(url => setCurrentUser(url))
+    )
   }
   function handleAddNewCard ({name, link}) {
-    return (api.addNewCard(name, link)
-       .then((data) => {setCards([data, ...cards])}))
+    return (
+      api.addNewCard(name, link)
+         .then(data => setCards([data, ...cards]))
+    )
+  }
+  function handleInfoTooltip (type, text) {
+    setTypeInfoTooltip(type);
+    setTextInfoTooltip(text);
+    handleOpenTooltip();
+  }
+  function exitAccount () {
+    setLogin('');
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+  }
+  function tokenCheck () {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt){
+      checkToken(jwt).then(res => {
+        if (res) {
+          setLoggedIn(true);
+          setLogin(res.data.email)
+          navigate("/", {replace: true})
+        }
+      })
+      .catch(err=> console.log(err, ' Неправильный токен или он отсутствует'));
+    }
+  } 
+  function errorRegLogHandle(err) {
+    if (typeof(err)==='object') {
+      handleInfoTooltip('error', 'Что-то пошло не так! Попробуйте ещё раз.');
+    } else {
+      handleInfoTooltip('error', err)
+    }
   }
 
   return (
-    <CurrentUserContext.Provider value={{currentUser, handleCardLike, handleCardDelete, cards, handleResponseError}}>
+    <CurrentUserContext.Provider value={{currentUser, handleCardLike, handleCardDelete, cards, handleResponseError, errorRegLogHandle, loggedIn}}>
       <div className="page">
-          <Header />
-          <Main handleEditProfileClick={handleEditProfileClick}
-                handleAddPlaceClick={handleAddPlaceClick} 
-                handleEditAvatarClick={handleEditAvatarClick} 
-                onCardClick={handleCardClick}/>
+          <Header exitAccount={exitAccount} login={login} />
+          <Routes>
+            <Route path="/" element={<ProtectedRouteElement element={Main} 
+              handleEditProfileClick={handleEditProfileClick}
+              handleAddPlaceClick={handleAddPlaceClick} 
+              handleEditAvatarClick={handleEditAvatarClick} 
+              onCardClick={handleCardClick}
+              />} 
+            />
+            <Route path="/sign-in" element={!loggedIn ? <Login handleInfoTooltip={handleInfoTooltip} setLoggedIn={setLoggedIn} setLogin={setLogin} /> : <Navigate to="/" replace />} />
+            <Route path="/sign-up" element={!loggedIn ? <Register handleInfoTooltip={handleInfoTooltip} /> : <Navigate to="/" replace />} />
+            <Route path="*" element={loggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />} />
+          </Routes>
+       
           <Footer />
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/> 
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} /> 
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddNewCard} />
+          <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} type={typeInfoTooltip} title={textInfoTooltip} />
           <ImagePopup card={selectedCard} 
                       name={'image'} 
                       onClose={closeAllPopups}/>

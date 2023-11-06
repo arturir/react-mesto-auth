@@ -1,14 +1,10 @@
-import {useContext} from 'react';
+import { useContext } from 'react';
 import Card from './Card';
 import addButton from '../images/add.svg';
-import {CurrentUserContext} from './../contexts/CurrentUserContext'
+import { CurrentUserContext } from './../contexts/CurrentUserContext'
 export default function Main ({handleEditAvatarClick, handleEditProfileClick, handleAddPlaceClick, onCardClick}) {
 
-    const context = useContext(CurrentUserContext),
-          currentUser = context.currentUser,
-          handleCardLike = context.handleCardLike,
-          handleCardDelete = context.handleCardDelete,
-          cards = context.cards;
+    const { currentUser, handleCardLike, handleCardDelete, cards } = useContext(CurrentUserContext);
 
     return (
         <main className="main">
