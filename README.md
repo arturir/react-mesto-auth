@@ -8,7 +8,7 @@
 **О чем данный проект**
 
 Проект "Mesto" С фотографиями и красивейших мест России.
-Link - https://arturir.github.io/mesto-react/
+Link - https://arturir.github.io/react-mesto-auth/
 
 **Функциональность**
 
