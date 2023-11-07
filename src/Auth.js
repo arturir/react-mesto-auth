@@ -38,6 +38,6 @@ const authorize = (password, email) => {
       }
     })
     .then(response => getResponseData(response))
-  } 
+  }
 
   export {authorize, register, checkToken}
