@@ -35,7 +35,7 @@ export default function Login ({handleInfoTooltip}) {
                     <h2 className="form__title form__title_theme_black form__title_typeform_log-reg">Регистрация</h2>
                     <input onChange={handleChangeEmail} id="login-form-email" type="text" className="form__text form__text_theme_black" name="email" placeholder="Email" minLength="4" maxLength="100" value={formValue.email} required />
                     <span className="form__input-error login-form-email-error"></span>
-                    <input onChange={handleChangePassword}id="login-form-password" type="password" className="form__text form__text_theme_black" name="password" placeholder="Пароль" minLength="6" maxLength="100" value={formValue.email} required  />
+                    <input onChange={handleChangePassword}id="login-form-password" type="password" className="form__text form__text_theme_black" name="password" placeholder="Пароль" minLength="6" maxLength="100" value={formValue.password} required  />
                     <span className="form__input-error login-form-password-error"></span>
                     <button type="submit" className="form__submit form__submit_theme_black form__submit_offset">Зарегестрироваться</button>
                     <div className="form__bottom-wrapper">
